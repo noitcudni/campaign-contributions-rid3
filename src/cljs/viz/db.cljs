@@ -1687,3 +1687,6 @@
                  :pacs "10000",
                  :affiliateid ""}]}
    })
+
+;; (let []
+;;   @re-frame.db/app-db)

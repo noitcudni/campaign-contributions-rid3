@@ -57,25 +57,19 @@
                              d (-> sim .nodes (get idx))
                              _ (.log js/console "drag-started: " ) ;;xxx
                              ]
-                         (when-not (-> js/d3 .-event .-active)
+                         (when (= 0 (-> js/d3 .-event .-active))
                            (-> sim (.alphaTarget 0.3) (.restart)))
                          (set! (.-fx d) (.-x d))
                          (set! (.-fy d) (.-y d))))
         dragged (fn [_ idx]
                   (let [sim @(re-frame/subscribe [:get-var :sim])
-                        d (-> sim .nodes (get idx))
-                        _ (.log js/console "x: " (.-x d))
-                        _ (.log js/console "y: " (.-y d))
-                        _ (.log js/console "fx: " (.-fx d))
-                        _ (.log js/console "fy: " (.-fy d))]
-                    (.log js/console "dragged: " (pr-str d)) ;;xxx
+                        d (-> sim .nodes (get idx))]
                     (set! (.-fx d) (.-x js/d3.event))
                     (set! (.-fy d) (.-y js/d3.event))))
         drag-ended (fn [_ idx]
-                     (.log js/console "drag-ended: " idx) ;;xxx
                      (let [sim @(re-frame/subscribe [:get-var :sim])
                            d (-> sim .nodes (get idx))]
-                       (when-not (-> js/d3 .-event .-active)
+                       (when (= 0 (-> js/d3 .-event .-active))
                          (-> sim (.alphaTarget 0)))
                        (set! (.-fx d) nil)
                        (set! (.-fy d) nil)))]

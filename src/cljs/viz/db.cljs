@@ -1,39 +1,41 @@
 (ns viz.db
   (:require re-frame.db))
 
+
 (def default-db
   {:name "re-frame name"
    ;; Test data read from (read-from-disk "N00029303_contrib.json")
    :test-data {:dataset
                {:nodes
-                [{ :id "mammal" :group 0  :label "Mammals" :level 1 }
-                 { :id "dog"    :group 0  :label "Dogs"    :level 2 }
-                 { :id "cat"    :group 0  :label "Cats"    :level 2 }
-                 { :id "fox"    :group 0  :label "Foxes"   :level 2 }
-                 { :id "elk"    :group 0  :label "Elk"     :level 2 }
-                 { :id "insect" :group 1  :label "Insects" :level 1 }
-                 { :id "ant"    :group 1  :label "Ants"    :level 2 }
-                 { :id "bee"    :group 1  :label "Bees"    :level 2 }
-                 { :id "fish"   :group 2  :label "Fish"    :level 1 }
-                 { :id "carp"   :group 2  :label "Carp"    :level 2 }
-                 { :id "pike"   :group 2  :label "Pikes"   :level 2 }]
+                [{ :id "mammal" :group 0  :label "Mammals" :level 1 :total 20}
+                 { :id "dog"    :group 0  :label "Dogs"    :level 2 :total 58}
+                 { :id "cat"    :group 0  :label "Cats"    :level 2 :total 13}
+                 { :id "fox"    :group 0  :label "Foxes"   :level 2 :total 6}
+                 { :id "elk"    :group 0  :label "Elk"     :level 2 :total 22}
+                 { :id "insect" :group 1  :label "Insects" :level 1 :total 2}
+                 { :id "ant"    :group 1  :label "Ants"    :level 2 :total 5}
+                 { :id "bee"    :group 1  :label "Bees"    :level 2 :total 16}
+                 { :id "fish"   :group 2  :label "Fish"    :level 1 :total 35}
+                 { :id "carp"   :group 2  :label "Carp"    :level 2 :total 32}
+                 { :id "pike"   :group 2  :label "Pikes"   :level 2 :total 55}]
                 :links
                 [
-                 { :target "mammal" :source "dog"  :strength 0.7 }
-                 { :target "mammal" :source "cat"  :strength 0.7 }
-                 { :target "mammal" :source "fox"  :strength 0.7 }
-                 { :target "mammal" :source "elk"  :strength 0.7 }
-                 { :target "insect" :source "ant"  :strength 0.7 }
-                 { :target "insect" :source "bee"  :strength 0.7 }
-                 { :target "fish"   :source "carp" :strength 0.7 }
-                 { :target "fish"   :source "pike" :strength 0.7 }
-                 { :target "cat"    :source "elk"  :strength 0.1 }
-                 { :target "carp"   :source "ant"  :strength 0.1 }
-                 { :target "elk"    :source "bee"  :strength 0.1 }
-                 { :target "dog"    :source "cat"  :strength 0.1 }
-                 { :target "fox"    :source "ant"  :strength 0.1 }
-                 { :target "pike"   :source "dog"  :strength 0.1 }
-                 ]}
+                 { :target "mammal" :source "dog"  :strength 0.7 :value 10}
+                 { :target "mammal" :source "cat"  :strength 0.7 :value 2}
+                 { :target "mammal" :source "fox"  :strength 0.7 :value 4}
+                 { :target "mammal" :source "elk"  :strength 0.7 :value 4}
+                 { :target "insect" :source "ant"  :strength 0.7 :value 1}
+                 { :target "insect" :source "bee"  :strength 0.7 :value 1}
+                 { :target "fish"   :source "carp" :strength 0.7 :value 30}
+                 { :target "fish"   :source "pike" :strength 0.7 :value 5}
+                 { :target "cat"    :source "elk"  :strength 0.1 :value 3}
+                 { :target "carp"   :source "ant"  :strength 0.1 :value 2}
+                 { :target "elk"    :source "bee"  :strength 0.1 :value 15}
+                 { :target "dog"    :source "cat"  :strength 0.1 :value 8}
+                 { :target "fox"    :source "ant"  :strength 0.1 :value 2}
+                 { :target "pike"   :source "dog"  :strength 0.1 :value 50}
+                 ]
+                }
 
                #_[{:ultorg "League of Conservation Voters",
                  :orgid "D000000288",
@@ -1687,6 +1689,5 @@
                  :pacs "10000",
                  :affiliateid ""}]}
    })
-
 ;; (let []
 ;;   @re-frame.db/app-db)

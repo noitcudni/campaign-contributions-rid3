@@ -72,7 +72,13 @@
                        (when (= 0 (-> js/d3 .-event .-active))
                          (-> sim (.alphaTarget 0)))
                        (set! (.-fx d) nil)
-                       (set! (.-fy d) nil)))]
+                       (set! (.-fy d) nil)))
+        ;; TODO customize scaling type and range
+        ;; TODO automatiically figures out the max and min in domain
+        radius-scale (-> js/d3
+                         .scaleLinear
+                         (.domain (clj->js [0 60]))
+                         (.range (clj->js [2 30])))]
     [rid3/viz
      {:id "force"
       :ratom ratom
@@ -83,7 +89,27 @@
                              (.style "background-color" "grey"))
                          )}
       :pieces
-      [{:kind :elem-with-data
+      [
+       {:kind :elem-with-data
+        :tag "line"
+        :class "link" ;;TODO customize link class
+        :did-mount (fn [node ratom]
+                     (.log js/console ">> line")
+                     (.log js/console node)
+                     (let [r (-> node
+                                 (.attr "stroke-width" (fn [d]
+                                                         ;; TODO stroke scale
+                                                         (radius-scale (.-value d))))
+                                 (.attr "stroke" "#E5E5E5")
+                                 )]
+                       (re-frame/dispatch-sync [:set-var :link-elems r])))
+        :prepare-dataset (fn [ratom]
+                           (-> @ratom
+                               (get :dataset)
+                               (get :links)
+                               clj->js))}
+
+       {:kind :elem-with-data
         :tag "circle"
         :class "node" ;;TODO customize circle class. WARNING: class can't be an empty string
         :did-mount (fn [node ratom]
@@ -91,7 +117,9 @@
                      (.log js/console node) ;;xxx
                      (let [r (-> node
                                  (.attr "r" (fn [d]
-                                              5))
+                                              ;; (.log js/console ">> d : " (pr-str d)) ;;xxx
+                                              (radius-scale (.-total d))
+                                              ))
                                  (.attr "fill" (fn [n]
                                                  "red"))
                                  (.call (-> js/d3
@@ -104,23 +132,6 @@
                            (-> @ratom
                                (get :dataset)
                                (get :nodes)
-                               clj->js))}
-
-       {:kind :elem-with-data
-        :tag "line"
-        :class "link" ;;TODO customize link class
-        :did-mount (fn [node ratom]
-                     (.log js/console ">> line")
-                     (.log js/console node)
-                     (let [r (-> node
-                                 (.attr "stroke-width" 1)
-                                 (.attr "stroke" "#E5E5E5")
-                                 )]
-                       (re-frame/dispatch-sync [:set-var :link-elems r])))
-        :prepare-dataset (fn [ratom]
-                           (-> @ratom
-                               (get :dataset)
-                               (get :links)
                                clj->js))}
 
        {:kind :raw

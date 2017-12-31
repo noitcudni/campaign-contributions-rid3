@@ -7,6 +7,15 @@
 
 (def transition-duration 800)
 
+(defn get-neighbors [links node]
+  (let [id (aget node "id")]
+    (->> links
+         (filter #(or (= (:target %) id)
+                      (= (:source %) id)))
+         (mapcat (fn [x] [(:target x) (:source x)]))
+         (into #{})
+         )))
+
 (defn sim-did-update [ratom]
   (let [sim (-> (js/d3.forceSimulation)
                 ;; TODO: customize link's id https://github.com/d3/d3-force#links
@@ -30,7 +39,21 @@
                            (.attr "cx" (fn [_ idx]
                                          (.-x (get node-dataset idx))))
                            (.attr "cy" (fn [_ idx]
-                                         (.-y (get node-dataset idx)))))
+                                         (.-y (get node-dataset idx))))
+                           (.on "click" (fn [n idx]
+                                          (.log js/console "clicked! " n " | idx: " idx) ;;xxx
+                                          (.log js/console "links: "(-> @ratom (get :dataset) (get :links)))
+
+                                          (let [neighbors (get-neighbors (-> @ratom (get :dataset) (get :links)) n)]
+                                            (.log js/console "neighbors: " neighbors) ;;xxx
+                                            (-> node-elems
+                                                (.attr "fill" (fn [n]
+                                                                (if (contains? neighbors (aget n "id"))
+                                                                  ;; consolidate fill function
+                                                                  "blue"
+                                                                  "red")))
+                                                ))
+                                          )))
 
                        (-> link-elems
                            (.attr "x1" (fn [_ idx]
@@ -50,6 +73,7 @@
         (.force "link")
         (.links link-dataset))
     ))
+
 
 (defn force-viz [ratom]
   (let [drag-started (fn [d idx]
@@ -81,8 +105,7 @@
                          (.range (clj->js [2 30])))]
     [rid3/viz
      {:id "force"
-      :ratom ratom
-      :svg {:did-mount (fn [node ratom]
+      :ratom ratom :svg {:did-mount (fn [node ratom]
                          (-> node
                              (.attr "width" (:width @ratom))
                              (.attr "height" (:height @ratom))

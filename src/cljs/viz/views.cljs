@@ -4,6 +4,16 @@
             [rid3.core :as rid3]
             ))
 
+(defn get-neighbors [links node]
+  (let [id (aget node "id")]
+    (->> links
+         (filter #(or (= (:target %) id)
+                      (= (:source %) id)))
+         (mapcat (fn [x] [(:target x) (:source x)]))
+         (into #{})
+         )))
+
+
 (defn force-viz [ratom]
   (let [drag-started (fn [d idx]
                        (let [sim @(re-frame/subscribe [:get-var :sim])
@@ -32,8 +42,7 @@
                          (.range (clj->js [2 30])))]
     [rid3/viz
      {:id "force"
-      :ratom ratom
-      :svg {:did-mount (fn [node ratom]
+      :ratom ratom :svg {:did-mount (fn [node ratom]
                          (-> node
                              (.attr "width" 1000)
                              (.attr "height" 1000)
@@ -109,8 +118,22 @@
                                               (.attr "cx" (fn [_ idx]
                                                             (.-x (get node-dataset idx))))
                                               (.attr "cy" (fn [_ idx]
-                                                            (.-y (get node-dataset idx)))))
+                                                            (.-y (get node-dataset idx))))
+                                              (.on "click" (fn [n idx]
+                                                             (.log js/console "clicked! " n " | idx: " idx) ;;xxx
+                                                             (.log js/console "links: "(-> @ratom (get :dataset) (get :links)))
 
+                                                             (let [neighbors (get-neighbors (-> @ratom (get :dataset) (get :links)) n)]
+                                                               (.log js/console "neighbors: " neighbors) ;;xxx
+                                                               (-> node-elems
+                                                                   (.attr "fill" (fn [n]
+                                                                                   (if (contains? neighbors (aget n "id"))
+                                                                                     ;; consolidate fill function
+                                                                                     "blue"
+                                                                                     "red")))
+                                                                   ))
+
+                                                             )))
                                           (-> link-elems
                                               (.attr "x1" (fn [_ idx]
                                                             (-> (get link-dataset idx) .-source .-x)))
@@ -137,19 +160,3 @@
   (let [data (re-frame/subscribe [::subs/test-data])]
     [force-viz data]
     ))
-
-
-;; (re-frame/subscribe [:get-var :node-elems])
-
-(let [s (-> js/d3
-            .scaleLinear
-            (.domain (clj->js [10 130]))
-            (.range (clj->js [0 960])))]
-  (s 20)
-  ;; (-> s (.scale 20))
-  ;; (keys (js->clj s))
-  ;; (s 20)
-  ;; (s 20)
-
-
-  )

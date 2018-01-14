@@ -3,6 +3,7 @@
                  [org.clojure/clojurescript "1.9.908"]
                  [reagent "0.7.0"]
                  [re-frame "0.10.2"]
+                 [re-com "0.9.0"]
                  [rid3 "0.2.0"]]
 
   :plugins [[lein-cljsbuild "1.1.5"]]

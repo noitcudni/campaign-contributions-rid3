@@ -12,3 +12,15 @@
  (fn [{:keys [db]} [_ var-key d3-node]]
    {:db (-> db
             (assoc var-key d3-node))}))
+
+(re-frame/reg-event-fx
+ :window-width
+ (fn [{:keys [db]} [_ width]]
+   {:db (-> db
+            (assoc-in [:test-data :width] width))}))
+
+(re-frame/reg-event-fx
+ :window-height
+ (fn [{:keys [db]} [_ height]]
+   {:db (-> db
+            (assoc-in [:test-data :height] height))}))

@@ -33,8 +33,7 @@
                  { :target "dog"    :source "cat"  :strength 0.1 }
                  { :target "fox"    :source "ant"  :strength 0.1 }
                  { :target "pike"   :source "dog"  :strength 0.1 }
-                 ]
-                }
+                 ]}
 
                #_[{:ultorg "League of Conservation Voters",
                  :orgid "D000000288",

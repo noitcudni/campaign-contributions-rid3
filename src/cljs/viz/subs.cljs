@@ -7,7 +7,7 @@
    (:name db)))
 
 (re-frame/reg-sub
- ::test-data
+ ::data
  (fn [db]
    (:test-data db)))
 
@@ -15,3 +15,8 @@
  :get-var
  (fn [db [_ var-key]]
    (get db var-key)))
+
+(re-frame/reg-sub
+ :window-width
+ (fn [db]
+   (:width db)))

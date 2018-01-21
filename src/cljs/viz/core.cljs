@@ -5,7 +5,6 @@
             [viz.views :as views]
             [viz.config :as config]))
 
-
 (defn dev-setup []
   (when config/debug?
     (enable-console-print!)
@@ -16,12 +15,14 @@
   (reagent/render [views/main-panel]
                   (.getElementById js/document "app")))
 
-;; (defn viz [ratom]
-;;   (let [])
-
-;;   )
 
 (defn ^:export init []
   (re-frame/dispatch-sync [::events/initialize-db])
+  (re-frame/dispatch-sync [:window-width js/window.innerWidth])
+  (re-frame/dispatch-sync [:window-height js/window.innerHeight])
+
   (dev-setup)
+  (set! js/window.onresize (fn []
+                             (re-frame/dispatch [:window-width js/window.innerWidth])
+                             (re-frame/dispatch [:window-height js/window.innerHeight])))
   (mount-root))

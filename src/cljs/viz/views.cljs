@@ -27,9 +27,11 @@
 
         node-dataset (clj->js (-> @ratom
                                   (get :dataset)
+                                  (get "CA")
                                   (get :nodes)))
         link-dataset (clj->js (-> @ratom
                                   (get :dataset)
+                                  (get "CA")
                                   (get :links)))
         node-elems @(re-frame/subscribe [:get-var :node-elems])
         text-elems @(re-frame/subscribe [:get-var :text-elems])
@@ -42,7 +44,7 @@
                            (.attr "cy" (fn [_ idx]
                                          (.-y (get node-dataset idx))))
                            (.on "click" (fn [n idx]
-                                          (let [neighbors (get-neighbors (-> @ratom (get :dataset) (get :links)) n)]
+                                          (let [neighbors (get-neighbors (-> @ratom (get :dataset) (get "CA") (get :links)) n)]
                                             (.log js/console "neighbors: " neighbors) ;;xxx
                                             (-> text-elems
                                                 (.text (fn [curr]
@@ -155,6 +157,7 @@
         :prepare-dataset (fn [ratom]
                            (-> @ratom
                                (get :dataset)
+                               (get "CA")
                                (get :links)
                                clj->js))}
 
@@ -186,7 +189,7 @@
                                             (.on "end" drag-ended))))]
                        (re-frame/dispatch-sync [:set-var :node-elems r])))
         :prepare-dataset (fn [ratom]
-                           (-> @ratom (get :dataset) (get :nodes) clj->js))}
+                           (-> @ratom (get :dataset) (get "CA") (get :nodes) clj->js))}
 
        {:kind :elem-with-data
         :tag "text"
@@ -202,7 +205,7 @@
                        (re-frame/dispatch-sync [:set-var :text-elems r])
                        ))
         :prepare-dataset (fn [ratom]
-                           (-> @ratom (get :dataset) (get :nodes) clj->js))
+                           (-> @ratom (get :dataset) (get "CA") (get :nodes) clj->js))
         }
 
        {:kind :raw

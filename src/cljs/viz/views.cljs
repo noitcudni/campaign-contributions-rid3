@@ -45,7 +45,6 @@
                                          (.-y (get node-dataset idx))))
                            (.on "click" (fn [n idx]
                                           (let [neighbors (get-neighbors (-> @ratom (get :dataset) (get "CA") (get :links)) n)]
-                                            (.log js/console "neighbors: " neighbors) ;;xxx
                                             (-> text-elems
                                                 (.text (fn [curr]
                                                          (cond (or (= (.-id curr) (.-id n))
@@ -65,9 +64,6 @@
                                                 ))
 
                                           )))
-                       ;; textElements
-                       ;; .attr(“x”, node => node.x)
-                       ;; .attr(“y”, node => node.y)
                        (-> text-elems
                            (.attr "x" (fn [_ idx]
                                         (.-x (get node-dataset idx))
@@ -169,7 +165,7 @@
                      (.log js/console node) ;;xxx
                      (let [r (-> node
                                  (.attr "r" (fn [d]
-                                              ;; (.log js/console ">> d : " (pr-str d)) ;;xxx
+                                              ;; (.log js/console ">> circle | d : " (pr-str d)) ;;xxx
                                               (radius-scale (.-total d))
                                               ;; 2
                                               ))
@@ -221,74 +217,133 @@
                                                                   (if x
                                                                     (swap! sel-states-ratom conj iso)
                                                                     (swap! sel-states-ratom disj iso))
-                                                                  (.log js/console @sel-states-ratom)
+                                                                  ;; (.log js/console @sel-states-ratom)
+                                                                  ;; (re-frame/dispatch [:sel-states @sel-states-ratom])
                                                                   )])))
 
 (defn control-panel []
   (fn []
     (let [sel-states-ratom (reagent/atom #{})]
-     [re-com/v-box
-      :children
-      [[state-checkbox "AL" sel-states-ratom]
-       [state-checkbox "AK" sel-states-ratom]
-       [state-checkbox "AZ" sel-states-ratom]
-       [state-checkbox "AR" sel-states-ratom]
-       [state-checkbox "CA" sel-states-ratom]
-       [state-checkbox "CO" sel-states-ratom]
-       [state-checkbox "CT" sel-states-ratom]
-       [state-checkbox "DE" sel-states-ratom]
-       [state-checkbox "FL" sel-states-ratom]
-       [state-checkbox "GA" sel-states-ratom]
-       [state-checkbox "HI" sel-states-ratom]
-       [state-checkbox "ID" sel-states-ratom]
-       [state-checkbox "IL" sel-states-ratom]
-       [state-checkbox "IN" sel-states-ratom]
-       [state-checkbox "IA" sel-states-ratom]
-       [state-checkbox "KS" sel-states-ratom]
-       [state-checkbox "KY" sel-states-ratom]
-       [state-checkbox "LA" sel-states-ratom]
-       [state-checkbox "ME" sel-states-ratom]
-       [state-checkbox "MD" sel-states-ratom]
-       [state-checkbox "MA" sel-states-ratom]
-       [state-checkbox "MI" sel-states-ratom]
-       [state-checkbox "MN" sel-states-ratom]
-       [state-checkbox "MS" sel-states-ratom]
-       [state-checkbox "MO" sel-states-ratom]
-       [state-checkbox "MT" sel-states-ratom]
-       [state-checkbox "NE" sel-states-ratom]
-       [state-checkbox "NV" sel-states-ratom]
-       [state-checkbox "NH" sel-states-ratom]
-       [state-checkbox "NJ" sel-states-ratom]
-       [state-checkbox "NM" sel-states-ratom]
-       [state-checkbox "NY" sel-states-ratom]
-       [state-checkbox "NC" sel-states-ratom]
-       [state-checkbox "ND" sel-states-ratom]
-       [state-checkbox "OH" sel-states-ratom]
-       [state-checkbox "OK" sel-states-ratom]
-       [state-checkbox "OR" sel-states-ratom]
-       [state-checkbox "PA" sel-states-ratom]
-       [state-checkbox "RI" sel-states-ratom]
-       [state-checkbox "SC" sel-states-ratom]
-       [state-checkbox "SD" sel-states-ratom]
-       [state-checkbox "TN" sel-states-ratom]
-       [state-checkbox "TX" sel-states-ratom]
-       [state-checkbox "UT" sel-states-ratom]
-       [state-checkbox "VT" sel-states-ratom]
-       [state-checkbox "VA" sel-states-ratom]
-       [state-checkbox "WA" sel-states-ratom]
-       [state-checkbox "WV" sel-states-ratom]
-       [state-checkbox "WI" sel-states-ratom]
-       [state-checkbox "WY" sel-states-ratom]]
-      ])))
+      [re-com/h-box
+       :height "100px"
+       ;; :style {:padding "10px"}
+       :gap "15px"
+       :children
+       [
+        [re-com/v-box
+         :children
+         [[re-com/label :label "New England"]
+          [state-checkbox "CT" sel-states-ratom]
+          [state-checkbox "ME" sel-states-ratom]
+          [state-checkbox "MA" sel-states-ratom]
+          [state-checkbox "NH" sel-states-ratom]
+          [state-checkbox "RI" sel-states-ratom]
+          [state-checkbox "VT" sel-states-ratom]
+          ]]
+
+        [re-com/v-box
+         :children
+         [[re-com/label :label "Mideast"]
+          [state-checkbox "DE" sel-states-ratom]
+          [state-checkbox "MD" sel-states-ratom]
+          [state-checkbox "NJ" sel-states-ratom]
+          [state-checkbox "NY" sel-states-ratom]
+          [state-checkbox "PA" sel-states-ratom]
+
+          ]]
+
+        [re-com/v-box
+         :children
+         [[re-com/label :label "Great Lakes"]
+          [state-checkbox "IL" sel-states-ratom]
+          [state-checkbox "IN" sel-states-ratom]
+          [state-checkbox "MI" sel-states-ratom]
+          [state-checkbox "OH" sel-states-ratom]
+          [state-checkbox "WI" sel-states-ratom]
+
+          ]]
+
+        [re-com/v-box
+         :children
+         [[re-com/label :label "Southeast"]
+          [state-checkbox "AL" sel-states-ratom]
+          [state-checkbox "AR" sel-states-ratom]
+          [state-checkbox "FL" sel-states-ratom]
+          [state-checkbox "GA" sel-states-ratom]
+          [state-checkbox "KY" sel-states-ratom]
+          [state-checkbox "LA" sel-states-ratom]
+          [state-checkbox "MS" sel-states-ratom]
+          [state-checkbox "NC" sel-states-ratom]
+          [state-checkbox "SC" sel-states-ratom]
+          [state-checkbox "TN" sel-states-ratom]
+          [state-checkbox "VA" sel-states-ratom]
+          [state-checkbox "WV" sel-states-ratom]
+
+          ]]
+
+        [re-com/v-box
+         :children
+         [[re-com/label :label "Plains"]
+          [state-checkbox "IA" sel-states-ratom]
+          [state-checkbox "KS" sel-states-ratom]
+          [state-checkbox "MN" sel-states-ratom]
+          [state-checkbox "MO" sel-states-ratom]
+          [state-checkbox "NE" sel-states-ratom]
+          [state-checkbox "ND" sel-states-ratom]
+          [state-checkbox "SD" sel-states-ratom]
+
+          ]]
+
+        [re-com/v-box
+         :children
+         [[re-com/label :label "Rocky Mountain"]
+          [state-checkbox "CO" sel-states-ratom]
+          [state-checkbox "ID" sel-states-ratom]
+          [state-checkbox "MT" sel-states-ratom]
+          [state-checkbox "UT" sel-states-ratom]
+          [state-checkbox "WY" sel-states-ratom]
+          ]]
+
+        [re-com/v-box
+         :children
+         [[re-com/label :label "Southwest"]
+          [state-checkbox "AZ" sel-states-ratom]
+          [state-checkbox "NM" sel-states-ratom]
+          [state-checkbox "OK" sel-states-ratom]
+          [state-checkbox "TX" sel-states-ratom]
 
 
+          ]]
+
+        [re-com/v-box
+         :children
+         [[re-com/label :label "West"]
+          [state-checkbox "AK" sel-states-ratom]
+          [state-checkbox "CA" sel-states-ratom]
+          [state-checkbox "HI" sel-states-ratom]
+          [state-checkbox "NV" sel-states-ratom]
+          [state-checkbox "OR" sel-states-ratom]
+          [state-checkbox "WA" sel-states-ratom]
+
+
+          ]]
+        ;; [re-com/v-box
+        ;;  :children
+        ;;  [[state-checkbox "AL" sel-states-ratom]
+        ;;   [state-checkbox "AK" sel-states-ratom]]
+        ;;  ]
+        ]])
+    ))
+
+;; @(re-frame/subscribe [:sel-states])
+;; (re-frame/dispatch-sync [:set-var "test-var" "1234"])
+;; @(re-frame/subscrive [:get-var "test-var"])
 
 (defn main-panel []
-  (fn []
-    (let [data (re-frame/subscribe [::subs/data])
-          ;; data (swap! data :window-width (fn []
-          ;;                                  @window-width-ratom))
-          ]
-      #_[control-panel]
-      [force-viz data]
-      )))
+  (let [selected-ratom (reagent/atom #{})
+        data (re-frame/subscribe [::subs/data])]
+    [re-com/h-box
+     :children
+     [[control-panel]
+      [force-viz data]]]
+    ))

@@ -218,7 +218,7 @@
                                                                     (swap! sel-states-ratom conj iso)
                                                                     (swap! sel-states-ratom disj iso))
                                                                   ;; (.log js/console @sel-states-ratom)
-                                                                  ;; (re-frame/dispatch [:sel-states @sel-states-ratom])
+                                                                  (re-frame/dispatch [:sel-states @sel-states-ratom])
                                                                   )])))
 
 (defn control-panel []
@@ -311,8 +311,6 @@
           [state-checkbox "NM" sel-states-ratom]
           [state-checkbox "OK" sel-states-ratom]
           [state-checkbox "TX" sel-states-ratom]
-
-
           ]]
 
         [re-com/v-box
@@ -324,14 +322,7 @@
           [state-checkbox "NV" sel-states-ratom]
           [state-checkbox "OR" sel-states-ratom]
           [state-checkbox "WA" sel-states-ratom]
-
-
           ]]
-        ;; [re-com/v-box
-        ;;  :children
-        ;;  [[state-checkbox "AL" sel-states-ratom]
-        ;;   [state-checkbox "AK" sel-states-ratom]]
-        ;;  ]
         ]])
     ))
 

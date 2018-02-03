@@ -24,3 +24,9 @@
  (fn [{:keys [db]} [_ height]]
    {:db (-> db
             (assoc-in [:test-data :height] height))}))
+
+(re-frame/reg-event-fx
+ :sel-states
+ (fn [{:keys [db]} [_ sel-states]]
+   {:db (-> db
+            (assoc-in [:test-data :sel-states] sel-states))}))

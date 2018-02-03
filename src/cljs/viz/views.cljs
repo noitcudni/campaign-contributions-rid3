@@ -156,6 +156,7 @@
                                                          (link-scale (.-total d))
                                                          ;; (radius-scale (.-value d))
                                                          ))
+                                 (.attr "stroke-opacity" 0.3)
                                  (.attr "stroke" "#E5E5E5")
                                  )]
                        (re-frame/dispatch-sync [:set-var :link-elems r])))

@@ -24,15 +24,20 @@
                 (.force "center" (js/d3.forceCenter (/ (:width @ratom) 2)
                                                     (/ (:height @ratom) 2))))
         _ (re-frame/dispatch-sync [:set-var :sim sim])
-
-        node-dataset (clj->js (-> @ratom
-                                  (get :dataset)
-                                  (get "CA")
-                                  (get :nodes)))
-        link-dataset (clj->js (-> @ratom
-                                  (get :dataset)
-                                  (get "CA")
-                                  (get :links)))
+        node-dataset (let [sel-states (:sel-states @ratom)]
+                       (if (or (nil? sel-states)  (empty? sel-states))
+                         (clj->js [])
+                         (clj->js (-> @ratom
+                                      (get :dataset)
+                                      (get (first sel-states))
+                                      (get :nodes)))))
+        link-dataset (let [sel-states (:sel-states @ratom)]
+                       (if (or (nil? sel-states) (empty? sel-states))
+                         (clj->js [])
+                         (clj->js (-> @ratom
+                                      (get :dataset)
+                                      (get (first sel-states))
+                                      (get :links)))))
         node-elems @(re-frame/subscribe [:get-var :node-elems])
         text-elems @(re-frame/subscribe [:get-var :text-elems])
         link-elems @(re-frame/subscribe [:get-var :link-elems])
@@ -44,7 +49,11 @@
                            (.attr "cy" (fn [_ idx]
                                          (.-y (get node-dataset idx))))
                            (.on "click" (fn [n idx]
-                                          (let [neighbors (get-neighbors (-> @ratom (get :dataset) (get "CA") (get :links)) n)]
+                                          (let [neighbors (get-neighbors (-> @ratom (get :dataset)
+                                                                             ((fn [x]
+                                                                                (or (get x (first (:sel-states @ratom))) (get x "CA"))
+                                                                                ))
+                                                                              (get :links)) n)]
                                             (-> text-elems
                                                 (.text (fn [curr]
                                                          (cond (or (= (.-id curr) (.-id n))
@@ -151,11 +160,15 @@
                                  )]
                        (re-frame/dispatch-sync [:set-var :link-elems r])))
         :prepare-dataset (fn [ratom]
-                           (-> @ratom
-                               (get :dataset)
-                               (get "CA")
-                               (get :links)
-                               clj->js))}
+                           (let [sel-states (:sel-states @ratom)]
+                             (if (or (nil? sel-states)
+                                     (empty? sel-states))
+                               (clj->js [])
+                               (-> @ratom
+                                   (get :dataset)
+                                   (get (first sel-states))
+                                   (get :links)
+                                   clj->js))))}
 
        {:kind :elem-with-data
         :tag "circle"
@@ -185,7 +198,16 @@
                                             (.on "end" drag-ended))))]
                        (re-frame/dispatch-sync [:set-var :node-elems r])))
         :prepare-dataset (fn [ratom]
-                           (-> @ratom (get :dataset) (get "CA") (get :nodes) clj->js))}
+                           (let [sel-states (:sel-states @ratom)]
+                             (if (or (nil? sel-states)
+                                     (empty? sel-states))
+                               (clj->js [])
+                               (-> @ratom
+                                   (get :dataset)
+                                   (get (first sel-states))
+                                   (get :nodes)
+                                   clj->js)
+                               )))}
 
        {:kind :elem-with-data
         :tag "text"
@@ -201,7 +223,15 @@
                        (re-frame/dispatch-sync [:set-var :text-elems r])
                        ))
         :prepare-dataset (fn [ratom]
-                           (-> @ratom (get :dataset) (get "CA") (get :nodes) clj->js))
+                           (let [sel-states (:sel-states @ratom)]
+                             (if (or (nil? sel-states)
+                                     (empty? sel-states))
+                               (clj->js [])
+                               (-> @ratom (get :dataset)
+                                   (get (first sel-states))
+                                   (get :nodes)
+                                   clj->js)
+                               )))
         }
 
        {:kind :raw

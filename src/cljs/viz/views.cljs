@@ -229,9 +229,9 @@
 (defn control-panel []
   (fn []
     (let [sel-states-ratom (reagent/atom #{})]
-      [re-com/h-box
+      [re-com/v-box
        :height "100px"
-       ;; :style {:padding "10px"}
+       :style {:padding "13px"}
        :gap "15px"
        :children
        [
@@ -283,7 +283,6 @@
           [state-checkbox "TN" sel-states-ratom]
           [state-checkbox "VA" sel-states-ratom]
           [state-checkbox "WV" sel-states-ratom]
-
           ]]
 
         [re-com/v-box
@@ -330,10 +329,6 @@
           ]]
         ]])
     ))
-
-;; @(re-frame/subscribe [:sel-states])
-;; (re-frame/dispatch-sync [:set-var "test-var" "1234"])
-;; @(re-frame/subscrive [:get-var "test-var"])
 
 (defn main-panel []
   (let [selected-ratom (reagent/atom #{})

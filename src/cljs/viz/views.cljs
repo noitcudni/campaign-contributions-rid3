@@ -139,8 +139,6 @@
         :tag "line"
         :class "link" ;;TODO customize link class
         :did-mount (fn [node ratom]
-                     (.log js/console ">> line")
-                     (.log js/console node)
                      (let [r (-> node
                                  (.attr "stroke-width" (fn [d]
                                                          ;; TODO stroke scale
@@ -162,21 +160,17 @@
         :tag "circle"
         :class "node" ;;TODO customize circle class. WARNING: class can't be an empty string
         :did-mount (fn [node ratom]
-                     (.log js/console ">> circle")
-                     (.log js/console node) ;;xxx
                      (let [r (-> node
                                  (.attr "r" (fn [d]
-                                              ;; (.log js/console ">> circle | d : " (pr-str d)) ;;xxx
                                               (radius-scale (.-total d))
                                               ;; 2
                                               ))
                                  (.attr "fill" (fn [n]
                                                  ;; TODO: customize color
-                                                 (cond (= "org" (.-type n)) "yellow"
-                                                       (= "R" (.-party n)) "red"
-                                                       (= "D" (.-party n)) "blue"
+                                                 (cond (= "org" (aget n "type")) "#e5e500" ;;yellow
+                                                       (= "R" (aget n "party")) "#ff0000" ;;red
+                                                       (= "D" (aget n "party")) "#0000ff" ;;blue
                                                        )
-
                                                  ))
                                  (.call (-> js/d3
                                             (.drag)

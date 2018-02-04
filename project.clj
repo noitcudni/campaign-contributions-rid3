@@ -3,18 +3,29 @@
                  [org.clojure/clojurescript "1.9.908"]
                  [reagent "0.7.0"]
                  [re-frame "0.10.2"]
-                 [re-com "0.9.0"]
-                 [rid3 "0.2.0"]]
+                 [com.andrewmcveigh/cljs-time "0.5.0"]
+                 [org.clojure/core.async "0.2.391"]
+                 [re-com "2.1.0"]
+                 [rid3 "0.2.0"]
+                 [ns-tracker "0.3.0"]]
 
-  :plugins [[lein-cljsbuild "1.1.5"]]
+  :plugins [[lein-cljsbuild "1.1.5"]
+            [lein-garden "0.2.8"]]
 
   :min-lein-version "2.5.3"
 
   :source-paths ["src/clj"]
 
-  :clean-targets ^{:protect false} ["resources/public/js/compiled" "target"]
+  :clean-targets ^{:protect false} ["resources/public/js/compiled" "target"
+                                    "resources/public/css"]
 
   :figwheel {:css-dirs ["resources/public/css"]}
+
+  :garden {:builds [{:id           "screen"
+                     :source-paths ["src/clj"]
+                     :stylesheet   viz-test.css/screen
+                     :compiler     {:output-to     "resources/public/css/screen.css"
+                                    :pretty-print? true}}]}
 
   :profiles
   {:dev
@@ -45,7 +56,5 @@
                     :closure-defines {goog.DEBUG false}
                     :pretty-print    false}}
 
-
     ]}
-
   )

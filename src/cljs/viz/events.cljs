@@ -28,5 +28,21 @@
 (re-frame/reg-event-fx
  :sel-states
  (fn [{:keys [db]} [_ sel-states]]
-   {:db (-> db
-            (assoc-in [:test-data :sel-states] sel-states))}))
+   (let [dataset (-> db
+                     (get-in [:test-data :dataset]))
+         ;; concat links
+         links (->> sel-states
+                    (mapcat (fn [s] (-> dataset (get-in [s :links])))))
+         ;; aggregated nodes
+         nodes (->> sel-states
+                    (mapcat (fn [s] (-> dataset (get-in [s :nodes]))))
+                    (group-by :id)
+                    (map (fn [[id node-data]]
+                           (-> (first node-data)
+                               (assoc :total (->> node-data (map :total) (reduce +))))))
+                    )]
+
+     {:db (-> db
+              (assoc-in [:test-data :curr-dataset]
+                        {:nodes nodes :links links}))}
+     )))

@@ -24,20 +24,12 @@
                 (.force "center" (js/d3.forceCenter (/ (:width @ratom) 2)
                                                     (/ (:height @ratom) 2))))
         _ (re-frame/dispatch-sync [:set-var :sim sim])
-        node-dataset (let [sel-states (:sel-states @ratom)]
-                       (if (or (nil? sel-states)  (empty? sel-states))
-                         (clj->js [])
-                         (clj->js (-> @ratom
-                                      (get :dataset)
-                                      (get (first sel-states))
-                                      (get :nodes)))))
-        link-dataset (let [sel-states (:sel-states @ratom)]
-                       (if (or (nil? sel-states) (empty? sel-states))
-                         (clj->js [])
-                         (clj->js (-> @ratom
-                                      (get :dataset)
-                                      (get (first sel-states))
-                                      (get :links)))))
+        node-dataset (clj->js
+                      (let [curr-dataset (:curr-dataset @ratom)]
+                        (if (empty? curr-dataset) [] (:nodes curr-dataset))))
+        link-dataset (clj->js
+                      (let [curr-dataset (:curr-dataset @ratom)]
+                        (if (empty? curr-dataset) [] (:links curr-dataset))))
         node-elems @(re-frame/subscribe [:get-var :node-elems])
         text-elems @(re-frame/subscribe [:get-var :text-elems])
         link-elems @(re-frame/subscribe [:get-var :link-elems])
@@ -161,15 +153,10 @@
                                  )]
                        (re-frame/dispatch-sync [:set-var :link-elems r])))
         :prepare-dataset (fn [ratom]
-                           (let [sel-states (:sel-states @ratom)]
-                             (if (or (nil? sel-states)
-                                     (empty? sel-states))
-                               (clj->js [])
-                               (-> @ratom
-                                   (get :dataset)
-                                   (get (first sel-states))
-                                   (get :links)
-                                   clj->js))))}
+                           (clj->js
+                            (let [curr-dataset (:curr-dataset @ratom)]
+                              (if (empty? curr-dataset) [] (:links curr-dataset))))
+                           )}
 
        {:kind :elem-with-data
         :tag "circle"
@@ -185,7 +172,6 @@
                                               ))
                                  (.attr "fill" (fn [n]
                                                  ;; TODO: customize color
-                                                 (.log js/console (.-type n)) ;;xxx
                                                  (cond (= "org" (.-type n)) "yellow"
                                                        (= "R" (.-party n)) "red"
                                                        (= "D" (.-party n)) "blue"
@@ -199,16 +185,10 @@
                                             (.on "end" drag-ended))))]
                        (re-frame/dispatch-sync [:set-var :node-elems r])))
         :prepare-dataset (fn [ratom]
-                           (let [sel-states (:sel-states @ratom)]
-                             (if (or (nil? sel-states)
-                                     (empty? sel-states))
-                               (clj->js [])
-                               (-> @ratom
-                                   (get :dataset)
-                                   (get (first sel-states))
-                                   (get :nodes)
-                                   clj->js)
-                               )))}
+                           (clj->js
+                            (let [curr-dataset (:curr-dataset @ratom)]
+                              (if (empty? curr-dataset) [] (:nodes curr-dataset)))))
+        }
 
        {:kind :elem-with-data
         :tag "text"
@@ -224,15 +204,9 @@
                        (re-frame/dispatch-sync [:set-var :text-elems r])
                        ))
         :prepare-dataset (fn [ratom]
-                           (let [sel-states (:sel-states @ratom)]
-                             (if (or (nil? sel-states)
-                                     (empty? sel-states))
-                               (clj->js [])
-                               (-> @ratom (get :dataset)
-                                   (get (first sel-states))
-                                   (get :nodes)
-                                   clj->js)
-                               )))
+                           (clj->js
+                            (let [curr-dataset (:curr-dataset @ratom)]
+                              (if (empty? curr-dataset) [] (:nodes curr-dataset)))))
         }
 
        {:kind :raw

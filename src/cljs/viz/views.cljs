@@ -41,11 +41,10 @@
                            (.attr "cy" (fn [_ idx]
                                          (.-y (get node-dataset idx))))
                            (.on "click" (fn [n idx]
-                                          (let [neighbors (get-neighbors (-> @ratom (get :dataset)
-                                                                             ((fn [x]
-                                                                                (or (get x (first (:sel-states @ratom))) (get x "CA"))
-                                                                                ))
-                                                                              (get :links)) n)]
+                                          (let [curr-dataset (:curr-dataset @ratom)]
+                                            (if (empty? curr-dataset) [] (:nodes curr-dataset)))
+
+                                          (let [neighbors (get-neighbors (->> @ratom :curr-dataset :links) n)]
                                             (-> text-elems
                                                 (.text (fn [curr]
                                                          (cond (or (= (.-id curr) (.-id n))

@@ -19,17 +19,39 @@
 (re-frame/reg-sub
  ::get-hl-neighbors
  (fn [db]
+   (.log js/console "get-hl-neighbors")
    (let [lookup-table (->> (get-in db [:test-data :curr-dataset :nodes])
                            (map (fn [x] [(:id x) x]))
                            (into {})
                            )
-         neighbor-ids (:curr-neighbors db)
+         neighbor-ids (get db :curr-neighbors)
+
+         ;; neighbors (->> neighbor-ids
+         ;;                (map (fn [id]
+         ;;                       (get lookup-table id)
+         ;;                       ))
+         ;;                (remove (fn [x]
+         ;;                          (not= "org" (:type x)))))
+
+
+         contrib-table (->> (:curr-n-links db)
+                            (map (fn [x] [(:source x) (:total x)]))
+                            (into {})
+                            )
+         ;; _ (.log js/console "neighbors: " neighbors)
+         _ (.log js/console "contrib-table : " contrib-table)
          ]
+
      (->> neighbor-ids
           (map (fn [id]
-                 (get lookup-table id)
+                 (let [total (get contrib-table id)]
+                   (assoc (get lookup-table id) :target-contrib-total total))
                  ))
-          (sort-by :total)
+          (sort-by :target-contrib-total)
           reverse
-          ))
+          )
+
+
+     )
+
    ))

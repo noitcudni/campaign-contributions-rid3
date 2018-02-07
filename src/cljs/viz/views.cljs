@@ -53,6 +53,7 @@
 
                                           (let [n-links (get-neighboring-links (->> @ratom :curr-dataset :links) n)
                                                 neighbors (get-neighbor-ids n-links)
+                                                _ (.log js/console "able to dispatch neighbors: " neighbors);xxxx
 
                                                 _ (re-frame/dispatch [:hl-neighbors neighbors n-links])]
                                             (-> text-elems
@@ -66,7 +67,6 @@
 
                                             (-> node-elems
                                                 (.attr "fill" (fn [curr]
-                                                                (.log js/console "curr: " curr) ;xxx
                                                                 (if (contains? neighbors (aget curr "id"))
                                                                   (cond (= (aget curr "type") "org") "#009a9a"
                                                                         (= (aget curr "party") "D")  "#0000ff"
@@ -459,7 +459,7 @@
     ))
 
 
-(let [d [{:id "D000055937", :type "org", :label "Readco LLC", :total 5200, :indivs 5200, :pacs 0}
+#_(let [d [{:id "D000055937", :type "org", :label "Readco LLC", :total 5200, :indivs 5200, :pacs 0}
          {:id "Law Offices of Ellen B Lubell", :type "org", :label "Law Offices of Ellen B Lubell", :total 3700, :indivs 3700, :pacs 0}]]
   (->> d
        (map (fn [x]

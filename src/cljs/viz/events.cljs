@@ -52,5 +52,5 @@
  (fn [{:keys [db]} [_ neighbors n-links]]
    {:db (-> db
             (assoc :curr-neighbors neighbors)
-            )}
+            (assoc :curr-n-links n-links))}
    ))

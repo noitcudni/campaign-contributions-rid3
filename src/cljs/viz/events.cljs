@@ -49,7 +49,7 @@
 
 (re-frame/reg-event-fx
  :hl-neighbors
- (fn [{:keys [db]} [_ neighbors]]
+ (fn [{:keys [db]} [_ neighbors n-links]]
    {:db (-> db
             (assoc :curr-neighbors neighbors)
             )}

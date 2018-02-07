@@ -19,4 +19,17 @@
 (re-frame/reg-sub
  ::get-hl-neighbors
  (fn [db]
-   (:curr-neighbors db)))
+   (let [lookup-table (->> (get-in db [:test-data :curr-dataset :nodes])
+                           (map (fn [x] [(:id x) x]))
+                           (into {})
+                           )
+         neighbor-ids (:curr-neighbors db)
+         ]
+     (->> neighbor-ids
+          (map (fn [id]
+                 (get lookup-table id)
+                 ))
+          (sort-by :total)
+          reverse
+          ))
+   ))

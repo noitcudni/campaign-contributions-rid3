@@ -7,14 +7,20 @@
 
 (def transition-duration 800)
 
-(defn get-neighbors [links node]
+(defn get-neighboring-links [links node]
   (let [id (aget node "id")]
     (->> links
          (filter #(or (= (:target %) id)
                       (= (:source %) id)))
-         (mapcat (fn [x] [(:target x) (:source x)]))
-         (into #{})
+         ;; (into #{})
          )))
+
+(defn get-neighbor-ids [neighboring-links]
+  (->> neighboring-links
+       (mapcat (fn [x] [(:target x) (:source x)]))
+       (into #{})))
+
+
 
 (defn sim-did-update [ratom]
   (let [sim (-> (js/d3.forceSimulation)
@@ -45,9 +51,10 @@
                                           (let [curr-dataset (:curr-dataset @ratom)]
                                             (if (empty? curr-dataset) [] (:nodes curr-dataset)))
 
-                                          (let [neighbors (get-neighbors (->> @ratom :curr-dataset :links) n)
-                                                _ (re-frame/dispatch [:hl-neighbors neighbors])
-                                                ]
+                                          (let [n-links (get-neighboring-links (->> @ratom :curr-dataset :links) n)
+                                                neighbors (get-neighbor-ids n-links)
+
+                                                _ (re-frame/dispatch [:hl-neighbors neighbors n-links])]
                                             (-> text-elems
                                                 (.text (fn [curr]
                                                          (cond (or (= (.-id curr) (.-id n))
@@ -450,3 +457,18 @@
        [money-detail-panel])
       [force-viz data]]]
     ))
+
+
+(let [d [{:id "D000055937", :type "org", :label "Readco LLC", :total 5200, :indivs 5200, :pacs 0}
+         {:id "Law Offices of Ellen B Lubell", :type "org", :label "Law Offices of Ellen B Lubell", :total 3700, :indivs 3700, :pacs 0}]]
+  (->> d
+       (map (fn [x]
+              [(:id x) x]
+              ))
+       (into {})
+       )
+
+  )
+
+;; (let []
+;;   (get-in @re-frame.db/app-db [:test-data :curr-dataset :nodes]))

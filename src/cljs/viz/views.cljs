@@ -190,7 +190,8 @@
                      (let [r (-> node
                                  (.text (fn [d]
                                           (when (not= "org" (.-type d))
-                                            (.-label d))))
+                                            (.-label d))
+                                          ))
                                  (.attr "font-size" (fn [d] 12))
                                  (.attr "dx" 15)
                                  (.attr "dx" 4))]
@@ -222,105 +223,107 @@
 (defn control-panel []
   (fn []
     (let [sel-states-ratom (reagent/atom #{})]
-      [re-com/v-box
-       :height "100px"
-       :style {:padding "13px"}
-       :gap "15px"
-       :children
-       [
-        [re-com/v-box
-         :children
-         [[re-com/label :label "New England"]
-          [state-checkbox "CT" sel-states-ratom]
-          [state-checkbox "ME" sel-states-ratom]
-          [state-checkbox "MA" sel-states-ratom]
-          [state-checkbox "NH" sel-states-ratom]
-          [state-checkbox "RI" sel-states-ratom]
-          [state-checkbox "VT" sel-states-ratom]
-          ]]
+      [re-com/scroller
+       :v-scroll :auto
+       :child [re-com/v-box
+               :height "100px"
+               :style {:padding "13px"}
+               :gap "15px"
+               :children
+               [
+                [re-com/v-box
+                 :children
+                 [[re-com/label :label "New England"]
+                  [state-checkbox "CT" sel-states-ratom]
+                  [state-checkbox "ME" sel-states-ratom]
+                  [state-checkbox "MA" sel-states-ratom]
+                  [state-checkbox "NH" sel-states-ratom]
+                  [state-checkbox "RI" sel-states-ratom]
+                  [state-checkbox "VT" sel-states-ratom]
+                  ]]
 
-        [re-com/v-box
-         :children
-         [[re-com/label :label "Mideast"]
-          [state-checkbox "DE" sel-states-ratom]
-          [state-checkbox "MD" sel-states-ratom]
-          [state-checkbox "NJ" sel-states-ratom]
-          [state-checkbox "NY" sel-states-ratom]
-          [state-checkbox "PA" sel-states-ratom]
+                [re-com/v-box
+                 :children
+                 [[re-com/label :label "Mideast"]
+                  [state-checkbox "DE" sel-states-ratom]
+                  [state-checkbox "MD" sel-states-ratom]
+                  [state-checkbox "NJ" sel-states-ratom]
+                  [state-checkbox "NY" sel-states-ratom]
+                  [state-checkbox "PA" sel-states-ratom]
 
-          ]]
+                  ]]
 
-        [re-com/v-box
-         :children
-         [[re-com/label :label "Great Lakes"]
-          [state-checkbox "IL" sel-states-ratom]
-          [state-checkbox "IN" sel-states-ratom]
-          [state-checkbox "MI" sel-states-ratom]
-          [state-checkbox "OH" sel-states-ratom]
-          [state-checkbox "WI" sel-states-ratom]
+                [re-com/v-box
+                 :children
+                 [[re-com/label :label "Great Lakes"]
+                  [state-checkbox "IL" sel-states-ratom]
+                  [state-checkbox "IN" sel-states-ratom]
+                  [state-checkbox "MI" sel-states-ratom]
+                  [state-checkbox "OH" sel-states-ratom]
+                  [state-checkbox "WI" sel-states-ratom]
 
-          ]]
+                  ]]
 
-        [re-com/v-box
-         :children
-         [[re-com/label :label "Southeast"]
-          [state-checkbox "AL" sel-states-ratom]
-          [state-checkbox "AR" sel-states-ratom]
-          [state-checkbox "FL" sel-states-ratom]
-          [state-checkbox "GA" sel-states-ratom]
-          [state-checkbox "KY" sel-states-ratom]
-          [state-checkbox "LA" sel-states-ratom]
-          [state-checkbox "MS" sel-states-ratom]
-          [state-checkbox "NC" sel-states-ratom]
-          [state-checkbox "SC" sel-states-ratom]
-          [state-checkbox "TN" sel-states-ratom]
-          [state-checkbox "VA" sel-states-ratom]
-          [state-checkbox "WV" sel-states-ratom]
-          ]]
+                [re-com/v-box
+                 :children
+                 [[re-com/label :label "Southeast"]
+                  [state-checkbox "AL" sel-states-ratom]
+                  [state-checkbox "AR" sel-states-ratom]
+                  [state-checkbox "FL" sel-states-ratom]
+                  [state-checkbox "GA" sel-states-ratom]
+                  [state-checkbox "KY" sel-states-ratom]
+                  [state-checkbox "LA" sel-states-ratom]
+                  [state-checkbox "MS" sel-states-ratom]
+                  [state-checkbox "NC" sel-states-ratom]
+                  [state-checkbox "SC" sel-states-ratom]
+                  [state-checkbox "TN" sel-states-ratom]
+                  [state-checkbox "VA" sel-states-ratom]
+                  [state-checkbox "WV" sel-states-ratom]
+                  ]]
 
-        [re-com/v-box
-         :children
-         [[re-com/label :label "Plains"]
-          [state-checkbox "IA" sel-states-ratom]
-          [state-checkbox "KS" sel-states-ratom]
-          [state-checkbox "MN" sel-states-ratom]
-          [state-checkbox "MO" sel-states-ratom]
-          [state-checkbox "NE" sel-states-ratom]
-          [state-checkbox "ND" sel-states-ratom]
-          [state-checkbox "SD" sel-states-ratom]
+                [re-com/v-box
+                 :children
+                 [[re-com/label :label "Plains"]
+                  [state-checkbox "IA" sel-states-ratom]
+                  [state-checkbox "KS" sel-states-ratom]
+                  [state-checkbox "MN" sel-states-ratom]
+                  [state-checkbox "MO" sel-states-ratom]
+                  [state-checkbox "NE" sel-states-ratom]
+                  [state-checkbox "ND" sel-states-ratom]
+                  [state-checkbox "SD" sel-states-ratom]
 
-          ]]
+                  ]]
 
-        [re-com/v-box
-         :children
-         [[re-com/label :label "Rocky Mountain"]
-          [state-checkbox "CO" sel-states-ratom]
-          [state-checkbox "ID" sel-states-ratom]
-          [state-checkbox "MT" sel-states-ratom]
-          [state-checkbox "UT" sel-states-ratom]
-          [state-checkbox "WY" sel-states-ratom]
-          ]]
+                [re-com/v-box
+                 :children
+                 [[re-com/label :label "Rocky Mountain"]
+                  [state-checkbox "CO" sel-states-ratom]
+                  [state-checkbox "ID" sel-states-ratom]
+                  [state-checkbox "MT" sel-states-ratom]
+                  [state-checkbox "UT" sel-states-ratom]
+                  [state-checkbox "WY" sel-states-ratom]
+                  ]]
 
-        [re-com/v-box
-         :children
-         [[re-com/label :label "Southwest"]
-          [state-checkbox "AZ" sel-states-ratom]
-          [state-checkbox "NM" sel-states-ratom]
-          [state-checkbox "OK" sel-states-ratom]
-          [state-checkbox "TX" sel-states-ratom]
-          ]]
+                [re-com/v-box
+                 :children
+                 [[re-com/label :label "Southwest"]
+                  [state-checkbox "AZ" sel-states-ratom]
+                  [state-checkbox "NM" sel-states-ratom]
+                  [state-checkbox "OK" sel-states-ratom]
+                  [state-checkbox "TX" sel-states-ratom]
+                  ]]
 
-        [re-com/v-box
-         :children
-         [[re-com/label :label "West"]
-          [state-checkbox "AK" sel-states-ratom]
-          [state-checkbox "CA" sel-states-ratom]
-          [state-checkbox "HI" sel-states-ratom]
-          [state-checkbox "NV" sel-states-ratom]
-          [state-checkbox "OR" sel-states-ratom]
-          [state-checkbox "WA" sel-states-ratom]
-          ]]
-        ]])
+                [re-com/v-box
+                 :children
+                 [[re-com/label :label "West"]
+                  [state-checkbox "AK" sel-states-ratom]
+                  [state-checkbox "CA" sel-states-ratom]
+                  [state-checkbox "HI" sel-states-ratom]
+                  [state-checkbox "NV" sel-states-ratom]
+                  [state-checkbox "OR" sel-states-ratom]
+                  [state-checkbox "WA" sel-states-ratom]
+                  ]]
+                ]]])
     ))
 
 (defn main-panel []

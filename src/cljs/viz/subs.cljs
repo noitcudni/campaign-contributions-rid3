@@ -17,6 +17,6 @@
    (get db var-key)))
 
 (re-frame/reg-sub
- :window-width
+ ::get-hl-neighbors
  (fn [db]
-   (:width db)))
+   (:curr-neighbors db)))

@@ -46,3 +46,11 @@
               (assoc-in [:test-data :curr-dataset]
                         {:nodes nodes :links links}))}
      )))
+
+(re-frame/reg-event-fx
+ :hl-neighbors
+ (fn [{:keys [db]} [_ neighbors]]
+   {:db (-> db
+            (assoc :curr-neighbors neighbors)
+            )}
+   ))

@@ -41,10 +41,13 @@
                            (.attr "cy" (fn [_ idx]
                                          (.-y (get node-dataset idx))))
                            (.on "click" (fn [n idx]
+
                                           (let [curr-dataset (:curr-dataset @ratom)]
                                             (if (empty? curr-dataset) [] (:nodes curr-dataset)))
 
-                                          (let [neighbors (get-neighbors (->> @ratom :curr-dataset :links) n)]
+                                          (let [neighbors (get-neighbors (->> @ratom :curr-dataset :links) n)
+                                                _ (re-frame/dispatch [:hl-neighbors neighbors])
+                                                ]
                                             (-> text-elems
                                                 (.text (fn [curr]
                                                          (cond (or (= (.-id curr) (.-id n))
@@ -56,11 +59,14 @@
 
                                             (-> node-elems
                                                 (.attr "fill" (fn [curr]
+                                                                (.log js/console "curr: " curr) ;xxx
                                                                 (if (contains? neighbors (aget curr "id"))
-                                                                  ;; customize color
-                                                                  "#009a9a"
-                                                                  ;; "blue"
-                                                                  "#5d5d5d")))
+                                                                  (cond (= (aget curr "type") "org") "#009a9a"
+                                                                        (= (aget curr "party") "D")  "#0000ff"
+                                                                        (= (aget curr "party") "R")  "#ff0000"
+                                                                        :else "#000000")
+                                                                  "#5d5d5d" ;;grey out
+                                                                  )))
                                                 ))
 
                                           )))
@@ -227,6 +233,7 @@
        :v-scroll :auto
        :child [re-com/v-box
                :height "100px"
+               :width "150px"
                :style {:padding "13px"}
                :gap "15px"
                :children
@@ -326,11 +333,120 @@
                 ]]])
     ))
 
+(defn money-detail-panel []
+  [re-com/scroller
+   ;; :height "100px"
+   ;; :width "200px"
+   :child
+   [re-com/v-box
+    :style {:padding "13px"}
+    :height "100px"
+    :width "100px"
+    :children
+    [[:div
+      [:div "hello"]
+      [:div "hello"]
+      [:div "hello"]
+      [:div "hello"]
+      [:div "hello"]
+      [:div "hello"]
+      [:div "hello"]
+      [:div "hello"]
+      [:div "hello"]
+      [:div "hello"]
+      [:div "hello"]
+      [:div "hello"]
+      [:div "hello"]
+      [:div "hello"]
+      [:div "hello"]
+      [:div "hello"]
+      [:div "hello"]
+      [:div "hello"]
+      [:div "hello"]
+      [:div "hello"]
+      [:div "hello"]
+      [:div "hello"]
+      [:div "hello"]
+      [:div "hello"]
+      [:div "hello"]
+      [:div "hello"]
+      [:div "hello"]
+      [:div "hello"]
+      [:div "hello"]
+      [:div "hello"]
+      [:div "hello"]
+      [:div "hello"]
+      [:div "hello"]
+      [:div "hello"]
+      [:div "hello"]
+      [:div "hello"]
+      [:div "hello"]
+      [:div "hello"]
+      [:div "hello"]
+      [:div "hello"]
+      [:div "hello"]
+
+      ]]
+    #_[re-com/alert-box
+     :alert-type :info
+     :heading "Contribution Details"
+     :body [:div
+            [:div "hello"]
+            [:div "hello"]
+            [:div "hello"]
+            [:div "hello"]
+            [:div "hello"]
+            [:div "hello"]
+            [:div "hello"]
+            [:div "hello"]
+            [:div "hello"]
+            [:div "hello"]
+            [:div "hello"]
+            [:div "hello"]
+            [:div "hello"]
+            [:div "hello"]
+            [:div "hello"]
+            [:div "hello"]
+            [:div "hello"]
+            [:div "hello"]
+            [:div "hello"]
+            [:div "hello"]
+            [:div "hello"]
+            [:div "hello"]
+            [:div "hello"]
+            [:div "hello"]
+            [:div "hello"]
+            [:div "hello"]
+            [:div "hello"]
+            [:div "hello"]
+            [:div "hello"]
+            [:div "hello"]
+            [:div "hello"]
+            [:div "hello"]
+            [:div "hello"]
+            [:div "hello"]
+            [:div "hello"]
+            [:div "hello"]
+            [:div "hello"]
+            [:div "hello"]
+            [:div "hello"]
+            [:div "hello"]
+            [:div "hello"]
+
+            ]
+     ]]]
+  )
+
 (defn main-panel []
   (let [selected-ratom (reagent/atom #{})
-        data (re-frame/subscribe [::subs/data])]
+        data (re-frame/subscribe [::subs/data])
+        hl-neighbors (re-frame/subscribe [::subs/get-hl-neighbors])
+        _ (.log js/console "hl-neighbors: " @hl-neighbors)
+        ]
     [re-com/h-box
      :children
      [[control-panel]
+      (when-not (empty? @hl-neighbors)
+       [money-detail-panel])
       [force-viz data]]]
     ))

@@ -54,3 +54,11 @@
             (assoc :curr-neighbors neighbors)
             (assoc :curr-n-links n-links))}
    ))
+
+(re-frame/reg-event-fx
+ :clear-neighbors
+ (fn [{:keys [db]} _]
+   {:db (-> db
+            (dissoc :curr-neighbors)
+            (dissoc :curr-n-links))}
+   ))

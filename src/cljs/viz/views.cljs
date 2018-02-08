@@ -340,107 +340,54 @@
                 ]]])
     ))
 
-(defn money-detail-panel []
+;; (-> [:table]
+;;      (merge '([:tr]
+;;               [:tr]))
+;;      )
+(let [d [:x :x :x :x]
+      indices (range (count d))
+      ]
+  (for [[i d] (zipmap indices d)]
+    i
+    )
+
+  )
+
+(->> (-> [:tbody]
+         (concat (->> (for [x (range 10)]
+                        [:tr [:td x]])
+                      (into [])
+                      ))
+         )
+     (into []))
+
+
+(defn money-detail-panel [hl-neighbor-ratom]
   [re-com/scroller
    ;; :height "100px"
    ;; :width "200px"
+   :v-scroll :auto
+   :h-scroll :off
    :child
    [re-com/v-box
     :style {:padding "13px"}
     :height "100px"
-    :width "100px"
+    :width (str (+ 40 (* 10 (->> @hl-neighbor-ratom
+                                 (map :label)
+                                 (map count)
+                                 (apply max)))) "px")
     :children
-    [[:div
-      [:div "hello"]
-      [:div "hello"]
-      [:div "hello"]
-      [:div "hello"]
-      [:div "hello"]
-      [:div "hello"]
-      [:div "hello"]
-      [:div "hello"]
-      [:div "hello"]
-      [:div "hello"]
-      [:div "hello"]
-      [:div "hello"]
-      [:div "hello"]
-      [:div "hello"]
-      [:div "hello"]
-      [:div "hello"]
-      [:div "hello"]
-      [:div "hello"]
-      [:div "hello"]
-      [:div "hello"]
-      [:div "hello"]
-      [:div "hello"]
-      [:div "hello"]
-      [:div "hello"]
-      [:div "hello"]
-      [:div "hello"]
-      [:div "hello"]
-      [:div "hello"]
-      [:div "hello"]
-      [:div "hello"]
-      [:div "hello"]
-      [:div "hello"]
-      [:div "hello"]
-      [:div "hello"]
-      [:div "hello"]
-      [:div "hello"]
-      [:div "hello"]
-      [:div "hello"]
-      [:div "hello"]
-      [:div "hello"]
-      [:div "hello"]
-
-      ]]
-    #_[re-com/alert-box
-     :alert-type :info
-     :heading "Contribution Details"
-     :body [:div
-            [:div "hello"]
-            [:div "hello"]
-            [:div "hello"]
-            [:div "hello"]
-            [:div "hello"]
-            [:div "hello"]
-            [:div "hello"]
-            [:div "hello"]
-            [:div "hello"]
-            [:div "hello"]
-            [:div "hello"]
-            [:div "hello"]
-            [:div "hello"]
-            [:div "hello"]
-            [:div "hello"]
-            [:div "hello"]
-            [:div "hello"]
-            [:div "hello"]
-            [:div "hello"]
-            [:div "hello"]
-            [:div "hello"]
-            [:div "hello"]
-            [:div "hello"]
-            [:div "hello"]
-            [:div "hello"]
-            [:div "hello"]
-            [:div "hello"]
-            [:div "hello"]
-            [:div "hello"]
-            [:div "hello"]
-            [:div "hello"]
-            [:div "hello"]
-            [:div "hello"]
-            [:div "hello"]
-            [:div "hello"]
-            [:div "hello"]
-            [:div "hello"]
-            [:div "hello"]
-            [:div "hello"]
-            [:div "hello"]
-            [:div "hello"]
-
-            ]
+    [
+     [:table #_{:style {:border "1px solid black"}}
+      (->> (-> [:tbody]
+               (concat (->> (let [indices (range (count @hl-neighbor-ratom))]
+                              (for [[i d] (zipmap indices @hl-neighbor-ratom)
+                                    :let [bk-color (if (even? i) "#DCDCDC" "#FFFAFA")]]
+                                [:tr
+                                 [:td {:style {:background-color bk-color :padding "2px"}} (:label d)]
+                                 [:td {:style {:background-color bk-color :padding "2px"}} (:target-contrib-total d)]]))
+                            (into []))))
+           (into []))]
      ]]]
   )
 
@@ -454,7 +401,7 @@
      :children
      [[control-panel]
       (when-not (empty? @hl-neighbors)
-       [money-detail-panel])
+       [money-detail-panel hl-neighbors])
       [force-viz data]]]
     ))
 

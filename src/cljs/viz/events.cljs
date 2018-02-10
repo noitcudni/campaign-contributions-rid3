@@ -49,8 +49,9 @@
 
 (re-frame/reg-event-fx
  :hl-neighbors
- (fn [{:keys [db]} [_ neighbors n-links]]
+ (fn [{:keys [db]} [_ sel-id neighbors n-links]]
    {:db (-> db
+            (assoc :curr-sel-id sel-id)
             (assoc :curr-neighbors neighbors)
             (assoc :curr-n-links n-links))}
    ))
@@ -59,6 +60,7 @@
  :clear-neighbors
  (fn [{:keys [db]} _]
    {:db (-> db
+            (dissoc :curr-sel-id)
             (dissoc :curr-neighbors)
             (dissoc :curr-n-links))}
    ))

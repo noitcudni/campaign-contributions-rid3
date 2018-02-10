@@ -54,8 +54,7 @@
                                           (let [n-links (get-neighboring-links (->> @ratom :curr-dataset :links) n)
                                                 neighbors (get-neighbor-ids n-links)
                                                 _ (.log js/console "able to dispatch neighbors: " neighbors);xxxx
-
-                                                _ (re-frame/dispatch [:hl-neighbors neighbors n-links])]
+                                                _ (re-frame/dispatch [:hl-neighbors (aget n "id") neighbors n-links])]
                                             (-> text-elems
                                                 (.text (fn [curr]
                                                          (cond (or (= (.-id curr) (.-id n))

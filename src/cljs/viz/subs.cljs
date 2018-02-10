@@ -22,16 +22,19 @@
    (.log js/console "get-hl-neighbors")
    (let [lookup-table (->> (get-in db [:test-data :curr-dataset :nodes])
                            (map (fn [x] [(:id x) x]))
-                           (into {})
-                           )
+                           (into {}))
+
+         curr-node (get lookup-table (:curr-sel-id db))
          neighbor-ids (get db :curr-neighbors)
-         contrib-table (->> (:curr-n-links db)
-                            (map (fn [x] [(:source x) (:total x)]))
-                            (into {})
-                            )
-         ;; _ (.log js/console "neighbors: " neighbors)
-         ;; _ (.log js/console "contrib-table : " contrib-table)
-         ]
+         contrib-table (if (= (:type curr-node) "org")
+                         (->> (:curr-n-links db)
+                              (map (fn [x] [(:target x) (:total x)]))
+                              (into {}))
+
+                         (->> (:curr-n-links db)
+                             (map (fn [x] [(:source x) (:total x)]))
+                             (into {})
+                             ))]
      (->> neighbor-ids
           (map (fn [id]
                  (let [total (get contrib-table id)]

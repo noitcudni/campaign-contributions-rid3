@@ -363,6 +363,15 @@
 
 (concat [[:tr]] [[:tr]])
 
+(defn detail-close-btn []
+  [re-com/button
+   :label "Close"
+   :style {:margin-bottom "3px"}
+   :class "btn-danger btn-block"
+   :on-click (fn []
+               ;; TODO : clear contrib data
+               (re-frame/dispatch [:clear-neighbors]))])
+
 (defn money-detail-panel [hl-neighbor-ratom]
   (fn []
     (let [w (str (* 7 (+ (->> @hl-neighbor-ratom
@@ -371,6 +380,7 @@
                                (apply max))
                           (->> @hl-neighbor-ratom
                                (map :target-contrib-total)
+                               (map str)
                                (map count)
                                (apply max)))
                     ) "px")]
@@ -387,26 +397,22 @@
         :max-width w
         :children
         [
-         [re-com/button
-          :label "Close"
-          :style {:margin-bottom "3px"}
-          :class "btn-danger btn-block"
-          :on-click (fn []
-                      ;; TODO : clear contrib data
-                      (re-frame/dispatch [:clear-neighbors]))]
+         [detail-close-btn]
          [re-com/gap :size "5px"]
          [:table #_{:style {:border "1px solid black"}}
           (->> (-> [:tbody]
-                   (concat (->> (let [indices (range (count @hl-neighbor-ratom))]
-                                  (for [[i d] (zipmap indices @hl-neighbor-ratom)
+                   (concat (->> (let [indices (range (count @hl-neighbor-ratom))
+                                      v (map vector indices @hl-neighbor-ratom)]
+                                  (for [[i d] v
                                         :let [bk-color (if (even? i) "#DCDCDC" "#FFFAFA")]]
                                     [:tr
                                      [:td {:style {:background-color bk-color :padding "2px"}} (:label d)]
                                      [:td {:style {:background-color bk-color :padding "2px" :text-align "right"}} (:target-contrib-total d)]]))
                                 (into []))))
-               (into []))]
-         ]]]))
-  )
+              (into []))]
+         [re-com/gap :size "10px"]
+         [detail-close-btn]
+         ]]])))
 
 (defn main-panel []
   (let [selected-ratom (reagent/atom #{})

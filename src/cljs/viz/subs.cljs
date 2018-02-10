@@ -25,33 +25,24 @@
                            (into {})
                            )
          neighbor-ids (get db :curr-neighbors)
-
-         ;; neighbors (->> neighbor-ids
-         ;;                (map (fn [id]
-         ;;                       (get lookup-table id)
-         ;;                       ))
-         ;;                (remove (fn [x]
-         ;;                          (not= "org" (:type x)))))
-
-
          contrib-table (->> (:curr-n-links db)
                             (map (fn [x] [(:source x) (:total x)]))
                             (into {})
                             )
          ;; _ (.log js/console "neighbors: " neighbors)
-         _ (.log js/console "contrib-table : " contrib-table)
+         ;; _ (.log js/console "contrib-table : " contrib-table)
          ]
-
      (->> neighbor-ids
           (map (fn [id]
                  (let [total (get contrib-table id)]
-                   (assoc (get lookup-table id) :target-contrib-total total))
+                   (assoc (get lookup-table id) :target-contrib-total
+                          (if-not (nil? total)
+                            (js/parseInt total)
+                            nil)))
                  ))
+          (remove #(nil? (:target-contrib-total %)))
           (sort-by :target-contrib-total)
           reverse
           )
-
-
      )
-
    ))

@@ -229,7 +229,7 @@
                                                                   (if x
                                                                     (swap! sel-states-ratom conj iso)
                                                                     (swap! sel-states-ratom disj iso))
-                                                                  ;; (.log js/console @sel-states-ratom)
+                                                                  (re-frame/dispatch [:clear-neighbors])
                                                                   (re-frame/dispatch [:sel-states @sel-states-ratom])
                                                                   )])))
 

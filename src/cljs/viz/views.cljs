@@ -365,48 +365,47 @@
 
 (defn money-detail-panel [hl-neighbor-ratom]
   (fn []
-    (let [w (str (+ 40 (* 10 (->> @hl-neighbor-ratom
-                                  (map :label)
-                                  (map count)
-                                  (apply max)))) "px")]
-     [re-com/scroller
-     ;; :height "100px"
-     ;; :width "200px"
-     ;; :width w
-     :v-scroll :auto
-     :h-scroll :off
-     :child
-     [re-com/v-box
-      :style {:padding "13px"}
-      :height "100px"
-      :width w
-      :children
-      [
-       [re-com/gap :size "5px"]
-       [:table #_{:style {:border "1px solid black"}}
-        (->> (-> [:tbody]
-                 (concat (->> (let [indices (range (count @hl-neighbor-ratom))]
-                                (concat
-                                 [[:tr
-                                   [:td {:rowspan "2"
-                                         :align "right"}
-                                    [re-com/button
-                                     :label "Close"
-                                     :style {:margin-bottom "3px"}
-                                     :class "btn-danger"
-                                     :on-click (fn []
-                                                 ;; TODO : clear contrib data
-                                                 (re-frame/dispatch [:clear-neighbors]))]]
-                                   ]]
-
-                                 (for [[i d] (zipmap indices @hl-neighbor-ratom)
-                                       :let [bk-color (if (even? i) "#DCDCDC" "#FFFAFA")]]
-                                   [:tr
-                                    [:td {:style {:background-color bk-color :padding "2px"}} (:label d)]
-                                    [:td {:style {:background-color bk-color :padding "2px" :text-align "right"}} (:target-contrib-total d)]])))
-                              (into []))))
-             (into []))]
-       ]]]))
+    (let [w (str (* 7 (+ (->> @hl-neighbor-ratom
+                               (map :label)
+                               (map count)
+                               (apply max))
+                          (->> @hl-neighbor-ratom
+                               (map :target-contrib-total)
+                               (map count)
+                               (apply max)))
+                    ) "px")]
+      [re-com/scroller
+       :v-scroll :auto
+       :h-scroll :off
+       :min-width w
+       :max-width w
+       :child
+       [re-com/v-box
+        :style {:padding "13px"}
+        :height "100px"
+        :min-width w
+        :max-width w
+        :children
+        [
+         [re-com/button
+          :label "Close"
+          :style {:margin-bottom "3px"}
+          :class "btn-danger btn-block"
+          :on-click (fn []
+                      ;; TODO : clear contrib data
+                      (re-frame/dispatch [:clear-neighbors]))]
+         [re-com/gap :size "5px"]
+         [:table #_{:style {:border "1px solid black"}}
+          (->> (-> [:tbody]
+                   (concat (->> (let [indices (range (count @hl-neighbor-ratom))]
+                                  (for [[i d] (zipmap indices @hl-neighbor-ratom)
+                                        :let [bk-color (if (even? i) "#DCDCDC" "#FFFAFA")]]
+                                    [:tr
+                                     [:td {:style {:background-color bk-color :padding "2px"}} (:label d)]
+                                     [:td {:style {:background-color bk-color :padding "2px" :text-align "right"}} (:target-contrib-total d)]]))
+                                (into []))))
+               (into []))]
+         ]]]))
   )
 
 (defn main-panel []

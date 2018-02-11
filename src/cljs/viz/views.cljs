@@ -53,7 +53,6 @@
 
                                           (let [n-links (get-neighboring-links (->> @ratom :curr-dataset :links) n)
                                                 neighbors (get-neighbor-ids n-links)
-                                                _ (.log js/console "able to dispatch neighbors: " neighbors);xxxx
                                                 _ (re-frame/dispatch [:hl-neighbors (aget n "id") neighbors n-links])]
                                             (-> text-elems
                                                 (.text (fn [curr]
@@ -106,7 +105,6 @@
   (let [drag-started (fn [d idx]
                        (let [sim @(re-frame/subscribe [:get-var :sim])
                              d (-> sim .nodes (get idx))
-                             _ (.log js/console "drag-started: " ) ;;xxx
                              ]
                          (when (= 0 (-> js/d3 .-event .-active))
                            (-> sim (.alphaTarget 0.3) (.restart)))
@@ -232,18 +230,21 @@
                                                                   (re-frame/dispatch [:sel-states @sel-states-ratom])
                                                                   )])))
 
-(defn control-panel []
+(defn control-panel [show-about-ratom]
   (fn []
     (let [sel-states-ratom (reagent/atom #{})]
       [re-com/scroller
        :v-scroll :auto
        :child [re-com/v-box
                :height "100px"
-               :width "150px"
+               :min-width "180px"
+               :max-width "180px"
                :style {:padding "13px"}
                :gap "15px"
                :children
                [
+
+
                 [re-com/v-box
                  :children
                  [[re-com/label :label "New England"]
@@ -414,30 +415,53 @@
          ]]])))
 
 (defn main-panel []
-  (let [selected-ratom (reagent/atom #{})
+  (let [show-about-ratom (reagent/atom true)
         data (re-frame/subscribe [::subs/data])
-        hl-neighbors (re-frame/subscribe [::subs/get-hl-neighbors])
-        _ (.log js/console "hl-neighbors: " @hl-neighbors)
-        ]
-    [re-com/h-box
-     :children
-     [[control-panel]
-      (when-not (empty? @hl-neighbors)
-       [money-detail-panel hl-neighbors])
-      [force-viz data]]]
-    ))
+        hl-neighbors (re-frame/subscribe [::subs/get-hl-neighbors])]
+    (fn []
+      [re-com/h-box
+       :children
+       [
+        [re-com/button
+         :label "About this project"
+         :class "btn-info"
+         :style {:position "absolute"
+                 :z-index 999
+                 :top "10px"
+                 :left (str (- (:width @data) 150) "px")
+                 }
+         :on-click (fn []
+                     (reset! show-about-ratom true))]
 
+        (when @show-about-ratom
+          [re-com/modal-panel
+           :child [re-com/v-box
+                   :max-width "500px"
+                   :children [
+                              [:h2 "About This Project"]
+                              [:p "The 2016 campaign contribution data is from " [:a {:href "https://www.opensecrets.org/"} "opensecrets.org"] "."]
+                              [:p "On the left pane, you can select the state(s) of your interest to be graphed. Currently, I'm graphing both Senators and House of Representatives. I may provide a way to segment the two in the future."]
+                              [:p "A blue circle denotes a Democrat legistator while a red circle denotes a Republican. A yellow circle represents a donor. The size of the circle represents the total dollar amount outgoing from a donar and incoming to a legistator. The width of the link denotes the amount donated from a donor to a legislator. Upon clicking on a circle, it will display the dollar amount in detail. The results will be sorted from highest to lowest."]
+                              [:p "One thing worth noting is that I didn't group the legislator in any way. The connectivity between the nodes, ie. the donors and the legislators, is the only determining factor when it comes to grouping."]
+                              [:p "This data visualization is created by " [:a {:href "https://github.com/noitcudni"} "Lih Chen"] "."]
+                              [:p "Feel free to check out the source code on " [:a {:href "https://github.com/noitcudni/campaign-contributions-rid3"} "Github"] "."]
+                              [re-com/button
+                               :label "Close"
+                               :class "btn-info btn-block"
+                               :on-click (fn []
+                                           (.log js/console "here")
+                                           (.log js/console @show-about-ratom)
+                                           (reset! show-about-ratom false))]
+                              ]
+                   ]
+           ])
 
-#_(let [d [{:id "D000055937", :type "org", :label "Readco LLC", :total 5200, :indivs 5200, :pacs 0}
-         {:id "Law Offices of Ellen B Lubell", :type "org", :label "Law Offices of Ellen B Lubell", :total 3700, :indivs 3700, :pacs 0}]]
-  (->> d
-       (map (fn [x]
-              [(:id x) x]
-              ))
-       (into {})
-       )
+        [control-panel show-about-ratom]
+        (when-not (empty? @hl-neighbors)
+          [money-detail-panel hl-neighbors])
+        [force-viz data]]]
+      )))
 
-  )
 
 ;; (let []
 ;;   (get-in @re-frame.db/app-db [:test-data :curr-dataset :nodes]))

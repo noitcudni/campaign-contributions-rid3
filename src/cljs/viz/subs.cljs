@@ -19,7 +19,6 @@
 (re-frame/reg-sub
  ::get-hl-neighbors
  (fn [db]
-   (.log js/console "get-hl-neighbors")
    (let [lookup-table (->> (get-in db [:test-data :curr-dataset :nodes])
                            (map (fn [x] [(:id x) x]))
                            (into {}))

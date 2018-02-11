@@ -424,7 +424,7 @@
        [
         [re-com/button
          :label "About this project"
-         :class "btn-info"
+         ;; :class "btn-info"
          :style {:position "absolute"
                  :z-index 999
                  :top "10px"
@@ -432,6 +432,38 @@
                  }
          :on-click (fn []
                      (reset! show-about-ratom true))]
+
+        ;; fb like button
+        [:iframe
+         {:src "https://www.facebook.com/plugins/like.php?href=https%3A%2F%2Fnoitcudni.github.io%2Fcampaign-contributions-rid3%2F&width=74&layout=button_count&action=like&size=large&show_faces=true&share=false&height=30&appId=111208182271324"
+          :width 74
+          :height 30
+          :style {:border "none"
+                  :overflow "hidden"
+                  :position "absolute"
+                  :z-index "99"
+                  :left (str (- (:width @data) 230) "px")
+                  :top "10px"
+                  }
+          :scrolling "no"
+          :frameborder "0"
+          :allowTransparency "true"
+          }]
+        ;; twitter button
+        [:iframe
+         {:src "https://platform.twitter.com/widgets/tweet_button.html?size=l&url=https%3A%2F%2Fnoitcudni.github.io%2Fcampaign-contributions-rid3%2F&text=2016%20campaign%20contribution%20data%20viz%0A"
+          :width 80
+          :height 28
+          :style {:border 0
+                  :overflow "hidden"
+                  :position "absolute"
+                  :z-index "99"
+                  :left (str (- (:width @data) 312) "px")
+                  :top "10px"
+                  }
+          :scrolling "no"
+          :frameborder "0"
+          }]
 
         (when @show-about-ratom
           [re-com/modal-panel

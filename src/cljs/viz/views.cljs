@@ -456,9 +456,9 @@
                    :children [
                               [:h2 "About This Project"]
                               [:p "The 2016 campaign contribution data is from " [:a {:href "https://www.opensecrets.org/"} "opensecrets.org"] "."]
-                              [:p "On the left pane, you can select the state(s) of interest to be graphed. Currently, I'm graphing both Senators and House of Representatives. I may provide a way to segment the two in the future."]
-                              [:p "A blue circle denotes a Democrat legistator while a red circle denotes a Republican. A yellow circle represents a donor. The size of the circle represents the total dollar amount outgoing from a donor and incoming to a legistator. The width of the link denotes the amount donated from a donor to a legislator. Upon clicking on a circle, it will display the dollar amount in detail. The results will be sorted from the highest to lowest."]
-                              [:p "One thing worth noting is that I didn't group the legislator in any way. The connectivity between the nodes, ie. the donors and the legislators, is the only determining factor when it comes to grouping."]
+                              [:p "In the left pane, you can select the state(s) of interest to be graphed. Currently, I’m graphing both Senators and House of Representatives. I may provide a way to segment the two in the future."]
+                              [:p "A blue circle denotes a Democrat legislator while a red circle denotes a Republican. Yellow circles are donors. The size of each circle represents the total dollar amount, either outgoing from a donor or incoming to a legistator.  The width of the link between two nodes represents the amount given from that donor to that legislator.  Clicking on a circle will display the dollar amount in detail. The results will be sorted from highest to lowest."]
+                              [:p "One thing worth noting is that I didn’t group the legislators in any way. The connectivity between the nodes is the only determining factor when it comes to grouping."]
                               [:p "This data visualization is created by " [:a {:href "https://github.com/noitcudni"} "Lih Chen"] "."]
                               [:p "Feel free to check out the source code on " [:a {:href "https://github.com/noitcudni/campaign-contributions-rid3"} "Github"] "."]
                               [re-com/button
